@@ -481,26 +481,61 @@
         // PDF
         // =========================
 
-        async function downloadPDF() {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
+     async function downloadPDF() {
+  const { jsPDF } = window.jspdf;
 
-          const { data } = await supabase
-            .from("payment_records")
-            .select("*")
-            .eq("title", currentTitle);
+  // Make sure autoTable plugin is included
+  // <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
 
-          doc.text(currentTitle + " Records", 14, 20);
+  const doc = new jsPDF();
 
-          let y = 35;
+  const { data, error } = await supabase
+    .from("payment_records")
+    .select("*")
+    .eq("title", currentTitle);
 
-          (data || []).forEach((r, i) => {
-            doc.text(`${i + 1}. ${r.name} | ${r.state_code} | ${r.batch}`, 14, y);
-            y += 10;
-          });
+  if (error) {
+    alert("Failed to fetch records");
+    return;
+  }
 
-          doc.save(currentTitle + ".pdf");
-        }
+  // Title
+  doc.setFontSize(16);
+  doc.text(`${currentTitle} Records`, 14, 20);
+
+  // Table columns
+  const tableColumn = ["S/N", "Name", "State Code", "Batch"];
+
+  // Table rows
+  const tableRows = [];
+
+  (data || []).forEach((r, i) => {
+    tableRows.push([
+      i + 1,
+      r.name || "",
+      r.state_code || "",
+      r.batch || "",
+    ]);
+  });
+
+  // Generate table
+  doc.autoTable({
+    head: [tableColumn],
+    body: tableRows,
+    startY: 30,
+    theme: "grid",
+    styles: {
+      fontSize: 10,
+      cellPadding: 3,
+    },
+    headStyles: {
+      fillColor: [41, 128, 185],
+    },
+  });
+
+  // Save PDF
+  doc.save(`${currentTitle}.pdf`);
+}
 
         // =========================
         // HELPERS
