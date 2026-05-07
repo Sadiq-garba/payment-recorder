@@ -431,7 +431,7 @@
            <td>${record.batch}</td>
           <td>
             <button class="warning-btn"
-              onclick="editRecord(${record.id}, ${JSON.stringify(record.name)}, ${JSON.stringify(record.state_code)},${JSON.stringify(record.batch)})">
+              onclick="editRecord(${record.id}, ${JSON.stringify(record.name)}, ${JSON.stringify(record.state_code)}, ${JSON.stringify(record.batch)})">
               Edit
             </button>
 
@@ -451,7 +451,7 @@
         // EDIT
         // =========================
 
-        function editRecord(id, name, stateCode) {
+        function editRecord(id, name, stateCode, batch) {
           editId = id;
           document.getElementById("name").value = name;
           document.getElementById("stateCode").value = stateCode;
