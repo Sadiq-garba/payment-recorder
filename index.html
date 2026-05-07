@@ -222,6 +222,8 @@
 
           <input type="text" id="stateCode" placeholder="State Code" />
 
+          <input type="text" id="batch" placeholder="Batch" />
+
           <button class="primary-btn" onclick="saveRecord()">
             Save Record
           </button>
@@ -386,17 +388,18 @@
         async function saveRecord() {
           const name = document.getElementById("name").value.trim();
           const stateCode = document.getElementById("stateCode").value.trim();
-
+          const batch = document.getElementById("batch").value.trim();
+          
           if (!name || !stateCode) return alert("Fill all fields");
 
           if (!editId) {
             await supabase
               .from("payment_records")
-              .insert([{ title: currentTitle, name, state_code: stateCode }]);
+              .insert([{ title: currentTitle, name, state_code: stateCode, batch:batch }]);
           } else {
             await supabase
               .from("payment_records")
-              .update({ name, state_code: stateCode })
+              .update({ name, state_code: stateCode, batch:batch })
               .eq("id", editId);
 
             editId = null;
@@ -424,9 +427,10 @@
         <tr>
           <td>${record.name}</td>
           <td>${record.state_code}</td>
+           <td>${record.batch}</td>
           <td>
             <button class="warning-btn"
-              onclick="editRecord(${record.id}, ${JSON.stringify(record.name)}, ${JSON.stringify(record.state_code)})">
+              onclick="editRecord(${record.id}, ${JSON.stringify(record.name)}, ${JSON.stringify(record.state_code)},${JSON.stringify(record.batch)})">
               Edit
             </button>
 
@@ -450,6 +454,7 @@
           editId = id;
           document.getElementById("name").value = name;
           document.getElementById("stateCode").value = stateCode;
+          document.getElementById("batch").value = batch;
         }
 
         // =========================
@@ -481,7 +486,7 @@
           let y = 35;
 
           (data || []).forEach((r, i) => {
-            doc.text(`${i + 1}. ${r.name} | ${r.state_code}`, 14, y);
+            doc.text(`${i + 1}. ${r.name} | ${r.state_code} | ${r.batch}`, 14, y);
             y += 10;
           });
 
@@ -495,6 +500,7 @@
         function clearInputs() {
           document.getElementById("name").value = "";
           document.getElementById("stateCode").value = "";
+          document.getElementById("batch").value = "";
         }
 
         // =========================
