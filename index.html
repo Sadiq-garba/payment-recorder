@@ -224,6 +224,8 @@
 
           <input type="text" id="batch" placeholder="Batch" />
 
+          <input type="number" id="amount" placeholder="Amount" />
+
           <button class="primary-btn" onclick="saveRecord()">
             Save Record
           </button>
@@ -238,6 +240,7 @@
                 <th>Name</th>
                 <th>State Code</th>
                 <th>Batch</th>
+                <th>Amount</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -392,17 +395,19 @@
           const name = document.getElementById("name").value.trim();
           const stateCode = document.getElementById("stateCode").value.trim();
           const batch = document.getElementById("batch").value.trim();
+          const amount = document.getElementById("amount").value.trim();
+          
           
           if (!name || !stateCode) return alert("Fill all fields");
 
           if (!editId) {
             await supabase
               .from("payment_records")
-              .insert([{ title: currentTitle, name, state_code: stateCode, batch:batch }]);
+              .insert([{ title: currentTitle, name, state_code: stateCode, batch:batch, amount:amount }]);
           } else {
             await supabase
               .from("payment_records")
-              .update({ name, state_code: stateCode, batch:batch })
+              .update({ name, state_code: stateCode, batch:batch, amount, amount })
               .eq("id", editId);
 
             editId = null;
@@ -432,6 +437,7 @@
       <td>${record.name}</td>
       <td>${record.state_code}</td>
       <td>${record.batch}</td>
+      <td>${record.amount}</td>
       <td>
         <button class="warning-btn edit-btn">
           Edit
@@ -444,7 +450,8 @@
         record.id,
         record.name,
         record.state_code,
-        record.batch
+        record.batch,
+        record.amount
       );
     });
 
@@ -466,6 +473,7 @@
           document.getElementById("name").value = name;
           document.getElementById("stateCode").value = stateCode;
           document.getElementById("batch").value = batch;
+          document.getElementById("amount").value = amount;
         }
 
         // =========================
@@ -506,7 +514,7 @@
   doc.text(`${currentTitle} Records`, 14, 20);
 
   // Table columns
-  const tableColumn = ["S/N", "Name", "State Code", "Batch"];
+  const tableColumn = ["S/N", "Name", "State Code", "Batch", "Amount"];
 
   // Table rows
   const tableRows = [];
@@ -517,6 +525,7 @@
       r.name || "",
       r.state_code || "",
       r.batch || "",
+      r.amount || ""
     ]);
   });
 
@@ -547,6 +556,7 @@
           document.getElementById("name").value = "";
           document.getElementById("stateCode").value = "";
           document.getElementById("batch").value = "";
+           document.getElementById("amount").value = "";
         }
 
         // =========================
