@@ -415,32 +415,40 @@
         // =========================
 
         async function loadRecords() {
-          const { data } = await supabase
-            .from("payment_records")
-            .select("*")
-            .eq("title", currentTitle);
+  const { data } = await supabase
+    .from("payment_records")
+    .select("*")
+    .eq("title", currentTitle);
 
-          const table = document.getElementById("recordTable");
-          table.innerHTML = "";
+  const table = document.getElementById("recordTable");
+  table.innerHTML = "";
 
-          (data || []).forEach((record) => {
-            table.innerHTML += `
-        <tr>
-          <td>${record.name}</td>
-          <td>${record.state_code}</td>
-           <td>${record.batch}</td>
-          <td>
-            <button class="warning-btn"
-              onclick="editRecord(${record.id}, ${JSON.stringify(record.name)}, ${JSON.stringify(record.state_code)}, ${JSON.stringify(record.batch)})">
-              Edit
-            </button>
+  (data || []).forEach((record) => {
+    const tr = document.createElement("tr");
 
-           
-          </td>
-        </tr>
-      `;
-          });
-        }
+    tr.innerHTML = `
+      <td>${record.name}</td>
+      <td>${record.state_code}</td>
+      <td>${record.batch}</td>
+      <td>
+        <button class="warning-btn edit-btn">
+          Edit
+        </button>
+      </td>
+    `;
+
+    tr.querySelector(".edit-btn").addEventListener("click", () => {
+      editRecord(
+        record.id,
+        record.name,
+        record.state_code,
+        record.batch
+      );
+    });
+
+    table.appendChild(tr);
+  });
+}
 
           //  Belongs to row button
          // <button class="danger-btn"
