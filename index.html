@@ -491,12 +491,8 @@
         // PDF
         // =========================
 
-     async function downloadPDF() {
+    async function downloadPDF() {
   const { jsPDF } = window.jspdf;
-
-  // Make sure autoTable plugin is included
-  //
-
   const doc = new jsPDF();
 
   const { data, error } = await supabase
@@ -509,27 +505,38 @@
     return;
   }
 
-  // Title
   doc.setFontSize(16);
   doc.text(`${currentTitle} Records`, 14, 20);
 
-  // Table columns
   const tableColumn = ["S/N", "Name", "State Code", "Batch", "Amount"];
 
-  // Table rows
   const tableRows = [];
 
+  let totalAmount = 0;
+
   (data || []).forEach((r, i) => {
+    const amount = Number(r.amount || 0);
+
+    totalAmount += amount;
+
     tableRows.push([
       i + 1,
       r.name || "",
       r.state_code || "",
       r.batch || "",
-      r.amount || ""
+      amount.toLocaleString(),
     ]);
   });
 
-  // Generate table
+  // Add total row
+  tableRows.push([
+    "",
+    "",
+    "",
+    "TOTAL",
+    totalAmount.toLocaleString(),
+  ]);
+
   doc.autoTable({
     head: [tableColumn],
     body: tableRows,
@@ -542,12 +549,13 @@
     headStyles: {
       fillColor: [41, 128, 185],
     },
+    bodyStyles: {
+      textColor: [0, 0, 0],
+    },
   });
 
-  // Save PDF
   doc.save(`${currentTitle}.pdf`);
 }
-
         // =========================
         // HELPERS
         // =========================
