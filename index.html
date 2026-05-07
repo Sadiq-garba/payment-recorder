@@ -121,23 +121,32 @@
         color: white;
       }
 
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 20px;
-      }
+     .table-container {
+  width: 100%;
+  overflow-x: auto;
+}
 
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 12px;
-        text-align: left;
-      }
+table {
+  width: 100%;
+  min-width: 700px;
+  border-collapse: collapse;
+}
 
-      th {
-        background: #007bff;
-        color: white;
-      }
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #f4f4f4;
+}
+
+.warning-btn {
+  padding: 6px 12px;
+  cursor: pointer;
+}
 
       .modal {
         position: fixed;
@@ -233,7 +242,7 @@
           <button class="success-btn" onclick="downloadPDF()">
             Download PDF
           </button>
-
+          <div class="table-container">
           <table>
             <thead>
               <tr>
@@ -247,6 +256,7 @@
 
             <tbody id="recordTable"></tbody>
           </table>
+         </div>
         </div>
       </div>
     </div>
